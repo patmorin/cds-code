@@ -7,6 +7,7 @@ from typing import Any, Dict, List, Tuple
 
 import matplotlib.pyplot as plt
 import scipy
+import scipy.spatial
 
 import message
 
