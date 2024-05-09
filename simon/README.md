@@ -4,9 +4,12 @@ An implementation of a greedy algorithm describe in this [research paper](https:
 
 ## Installation
 
-Dependencies:
+### Dependencies
+
 - Python 3
 - Qhull
+
+### Steps
 
 1. Create a virtual environment
 ```shell
@@ -30,14 +33,14 @@ source venv/bin/activate
 
 2. Run `cds.py` CLI tool
 ```shell
-python3 cds.py <your specific arguments here>
+python3 src/cds.py <your specific arguments here>
 ```
 
-When you're done using the CLI, run in the command prompt `deactivate`
-
+> *Remark 2*  
+> When you're done using the CLI, run in the command prompt `deactivate`
 
 > *Remark*  
-> For formatting, use `isort *.py` and `black *.py`, and linting, `flake8 --ignore=E501 *.py`
+> For formatting, use `isort src/*.py` and `black src/*.py`, and linting, `flake8 --ignore=E501 src/*.py`
 
 ## Research Paper Credits
 

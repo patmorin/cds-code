@@ -89,10 +89,17 @@ def generate_points(point_count: int, data_type: str) -> List[Tuple[float, float
     if data_type == RANDOM_DISK:
         points += [gen_unit_circ_point() for _ in range(additional_count)]
     elif data_type == COLLINEAR:
-        points += [(-1 + i / additional_count, -1 + i / additional_count) for i in range(additional_count)]
+        points += [
+            (-1 + i / additional_count, -1 + i / additional_count)
+            for i in range(additional_count)
+        ]
     elif data_type == RAND_TRI:
-        additional_points = [(random.random(), random.random()) for _ in range(additional_count)]
-        points += [(max(x, y), min(x, y)) for x, y in additional_points]  # ensure x < y for each point, swapping if necessary
+        additional_points = [
+            (random.random(), random.random()) for _ in range(additional_count)
+        ]
+        points += [
+            (max(x, y), min(x, y)) for x, y in additional_points
+        ]  # ensure x < y for each point, swapping if necessary
 
     return points
 
@@ -167,6 +174,9 @@ def add_outer_face(
         edge_face_map[cc_edge] = outer_face_id
 
 
+def createAdjacencyList() -> Dict[int, int]:
+    pass    
+
 def draw_graph(points: List[Tuple[float, float]], faces: List[List[int]]) -> None:
     print(message.STEP_5)
     sys.stdout.write(RED)
@@ -186,19 +196,18 @@ def plot_black_edges(points, faces) -> None:
             end_point = points[face[(i + 1) % EDGE_COUNT]]
             plt.plot(
                 [start_point[0], end_point[0]],
-                [start_point[1], end_point[1]], 
+                [start_point[1], end_point[1]],
                 color="black",
             )
+
 
 def plot_points(points) -> None:
     for point in points:
         plt.plot(
             point[0],
             point[1],
-            color = "red",
-            lw = 1,
-            marker = "o",
-            markersize = min(8, 180 / len(points)),
+            color="red",
+            lw=1,
+            marker="o",
+            markersize=min(8, 180 / len(points)),
         )
-
-

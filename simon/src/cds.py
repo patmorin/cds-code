@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import argparse
-from typing import Tuple
+from typing import Dict, Tuple
 
 import utils
 
@@ -16,12 +16,6 @@ def main() -> None:
     )  # Tuple[List[Tuple[float, float]], List[List[int]]]
 
     edge_face_map: Tuple[int, int] = utils.classify_edge(faces)
-
-    # TODO: adjacency list
-
-    # TODO: mpl avg x avg y face label
-
-    # TODO: mpl link between faces
 
     utils.draw_graph(points, faces)
 
