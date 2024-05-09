@@ -2,7 +2,6 @@ import argparse
 import random
 import sys
 from typing import Any, Dict, List, Set, Tuple
-import numpy as np
 
 import matplotlib.pyplot as plt
 import scipy
