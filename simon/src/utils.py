@@ -1,8 +1,8 @@
 import argparse
-import math
 import random
 import sys
 from typing import Any, Dict, List, Set, Tuple
+import numpy as np
 
 import matplotlib.pyplot as plt
 import scipy
@@ -84,32 +84,32 @@ def create_graph(
 
 
 def generate_points(point_count: int, data_type: str) -> List[Tuple[float, float]]:
-    if data_type == RANDOM_DISK:  # use a set of n - 3 random points
-        points = [(-1.5, -1.5), (-1.5, 3), (3, -1.5)] + [
-            gen_unit_circ_point() for _ in range(point_count - 3)
-        ]
-    elif data_type == COLLINEAR:  # use a set of n - 3 collinear points
-        points = [(-1.5, -1.5), (-1.5, 3), (3, -1.5)] + [
-            (-1 + i / (point_count - 3), -1 + i / (point_count - 3))
-            for i in range(point_count - 3)
-        ]
+    points = generate_initial_points(data_type)
+    additional_count = point_count - len(points)
+
+    if data_type == RANDOM_DISK:
+        points += [gen_unit_circ_point() for _ in range(additional_count)]
+    elif data_type == COLLINEAR:
+        points += [(-1 + i / additional_count, -1 + i / additional_count) for i in range(additional_count)]
     elif data_type == RAND_TRI:
-        points = [(0, 0), (1, 1), (1, 0)] + [
-            (random.random(), random.random()) for _ in range(point_count - 3)
-        ]
-        for i in range(point_count):
-            (x, y) = points[i]
-            if x < y:
-                points[i] = (y, x)
+        additional_points = [(random.random(), random.random()) for _ in range(additional_count)]
+        points += [(max(x, y), min(x, y)) for x, y in additional_points]  # ensure x < y for each point, swapping if necessary
 
     return points
 
 
+def generate_initial_points(data_type: str) -> List[Tuple[float, float]]:
+    if data_type == RANDOM_DISK or data_type == COLLINEAR:
+        return [(-1.5, -1.5), (-1.5, 3), (3, -1.5)]
+    elif data_type == RAND_TRI:
+        return [(0, 0), (1, 1), (1, 0)]
+
+
 def gen_unit_circ_point() -> Tuple[float, float]:
-    while 1 < 2:
+    while True:
         x = 2 * random.random() - 1
         y = 2 * random.random() - 1
-        if math.pow(x, 2) + math.pow(y, 2) < 1:
+        if x**2 + y**2 < 1:
             return (x, y)
 
 
@@ -126,8 +126,8 @@ def delaunay_triangulation(points: List[Tuple[float, float]]) -> List[List[int]]
 def classify_edge(faces: List[List[int]]) -> Dict[Tuple[int, int], int]:
     print(message.STEP_3)
 
-    edge_face_map = dict()
-    outer_face_edges = set()
+    edge_face_map: Dict[Tuple[int, int], int] = dict()
+    outer_face_edges: Set[Tuple[int, int]] = set()
 
     for face_id, face in enumerate(faces):
         for i in range(EDGE_COUNT):
@@ -169,26 +169,37 @@ def add_outer_face(
 
 
 def draw_graph(points: List[Tuple[float, float]], faces: List[List[int]]) -> None:
-    print(message.STEP_4)
+    print(message.STEP_5)
     sys.stdout.write(RED)
-    print(message.STEP_4_WARNING)
+    print(message.STEP_5_WARNING)
 
+    plot_black_edges(points, faces)
+
+    plot_points(points)
+
+    plt.show()
+
+
+def plot_black_edges(points, faces) -> None:
     for face in faces:
-        for i in range(3):
+        for i in range(EDGE_COUNT):
+            start_point = points[face[i]]
+            end_point = points[face[(i + 1) % EDGE_COUNT]]
             plt.plot(
-                [points[face[i]][0], points[face[(i + 1) % 3]][0]],
-                [points[face[i]][1], points[face[(i + 1) % 3]][1]],
+                [start_point[0], end_point[0]],
+                [start_point[1], end_point[1]], 
                 color="black",
             )
 
+def plot_points(points) -> None:
     for point in points:
         plt.plot(
             point[0],
             point[1],
-            color="red",
-            lw=1,
-            marker="o",
-            markersize=min(8, 180 / len(points)),
+            color = "red",
+            lw = 1,
+            marker = "o",
+            markersize = min(8, 180 / len(points)),
         )
 
-    plt.show()
+

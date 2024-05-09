@@ -26,13 +26,15 @@ Wrote a `README.md` wth a description of the project, and an installation and us
 > *Remark*  
 > I've written code such that functions are read like a newspaper i.e. top-down. This allows for a natural reading, and allows the reader to read higher levels of abstraction first i.e. the first few functions, and if needed, they may read more to learn the granular details i.e. the later functions
 
-## Updates carried out on: May 8th, 2024 (~2 hours)
+## Updates carried out on: May 8th, 2024 (~3 hours)
 
 ![](may-8-chalkboard.jpeg)
 
 ![](may-8-paper.jpeg)
 
-Complete edge to face map, ensuring the outer face edges are ordered in a counter-clockwise manner.
+- Complete edge to face map, ensuring the outer face edges are ordered in a counter-clockwise manner.
+- Created adjacency list with ordered edges.
+
 
 ## Updates carried out on: May 9th, 2024
 
