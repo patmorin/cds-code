@@ -15,7 +15,13 @@ def main() -> None:
         point_count, data_type
     )  # Tuple[List[Tuple[float, float]], List[List[int]]]
 
-    outer_face_edges: Tuple[int, int] = utils.map_edge(faces)
+    edge_face_map: Tuple[int, int] = utils.classify_edge(faces)
+
+    # TODO: adjacency list
+
+    # TODO: mpl avg x avg y face label
+
+    # TODO: mpl link between faces
 
     utils.draw_graph(points, faces)
 

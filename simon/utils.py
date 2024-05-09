@@ -1,13 +1,12 @@
 import argparse
-import collections
 import math
 import random
 import sys
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List, Set, Tuple
 
 import matplotlib.pyplot as plt
 import scipy
-import scipy.spatial
+import scipy.spatial  # linux
 
 import message
 
@@ -124,10 +123,10 @@ def delaunay_triangulation(points: List[Tuple[float, float]]) -> List[List[int]]
     return faces
 
 
-def map_edge(faces: List[List[int]]) -> Dict[Tuple[int, int], int]:
+def classify_edge(faces: List[List[int]]) -> Dict[Tuple[int, int], int]:
     print(message.STEP_3)
 
-    faces_map = dict()
+    edge_face_map = dict()
     outer_face_edges = set()
 
     for face_id, face in enumerate(faces):
@@ -136,15 +135,37 @@ def map_edge(faces: List[List[int]]) -> Dict[Tuple[int, int], int]:
                 face[i],
                 face[(i + 1) % EDGE_COUNT],
             )  # a edge in the counter-clockwise direction
-            faces_map[cc_edge] = collections.deque([face_id])
+            edge_face_map[cc_edge] = face_id
 
-            reversed_cc_edge: Tuple[int, int] = cc_edge[::-1]
-            if reversed_cc_edge in faces_map:
-                outer_face_edges.remove(reversed_cc_edge)
-            else:
-                outer_face_edges.add(cc_edge)
+            track_outer_face(cc_edge, outer_face_edges)
 
-    return outer_face_edges
+    add_outer_face(
+        len(faces), outer_face_edges, edge_face_map
+    )  # allocate a face id for the outerface. it's len(faces) since dynamic arrays start from 0 to n - 1, so by selecting len(faces), we're effectively doing n - 1 + 1 = n
+
+    return edge_face_map
+
+
+def track_outer_face(
+    cc_edge: Tuple[int, int], outer_face_edges: Set[Tuple[int, int]]
+) -> None:
+    reversed_cc_edge: Tuple[int, int] = cc_edge[::-1]
+    if reversed_cc_edge in outer_face_edges:
+        outer_face_edges.remove(reversed_cc_edge)
+    else:
+        outer_face_edges.add(cc_edge)
+
+
+def add_outer_face(
+    outer_face_id: int,
+    outer_face_edges: Set[Tuple[int, int]],
+    edge_face_map: Dict[Tuple[int, int], int],
+) -> None:
+    for c_edge in outer_face_edges:
+        cc_edge: Tuple[int, int] = c_edge[
+            ::-1
+        ]  # make the actual edge of each face counter-clockwise
+        edge_face_map[cc_edge] = outer_face_id
 
 
 def draw_graph(points: List[Tuple[float, float]], faces: List[List[int]]) -> None:
