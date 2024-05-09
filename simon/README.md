@@ -28,9 +28,9 @@ pip install -r requirements.txt
 source venv/bin/activate
 ```
 
-2. Run `delaunay.py` CLI tool
+2. Run `cds.py` CLI tool
 ```shell
-python3 delaunay <your specific arguments here>
+python3 cds.py <your specific arguments here>
 ```
 
 When you're done using the CLI, run in the command prompt `deactivate`
