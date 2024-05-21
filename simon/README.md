@@ -36,11 +36,11 @@ source venv/bin/activate
 python3 src/cds.py <your specific arguments here>
 ```
 
-> *Remark 2*  
+> [!WARNING]
 > When you're done using the CLI, run in the command prompt `deactivate`
 
 > *Remark*  
-> For formatting, use `isort src/*.py` and `black src/*.py`, and linting, `flake8 --ignore=E501 src/*.py`
+> For formatting and static analysis, run `check.sh`
 
 ## Research Paper Credits
 
