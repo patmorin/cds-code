@@ -39,7 +39,7 @@ python3 src/cds.py <your specific arguments here>
 > [!WARNING]
 > When you're done using the CLI, run in the command prompt `deactivate`
 
-> *Remark*  
+> [!TIP]  
 > For formatting and static analysis, run `check.sh`
 
 ## Research Paper Credits
