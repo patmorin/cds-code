@@ -176,10 +176,23 @@ def create_adjacency_list(faces):
 def draw_graph(points, delaunay_triangulation):
     points_array = np.array(points)
 
+    print(points_array)
+
     plt.triplot(
         points_array[:, 0], points_array[:, 1], delaunay_triangulation, color="black"
     )
 
-    plt.plot(points_array[:, 0], points_array[:, 1], "o", markersize=10)
+    plt.plot(points_array[:, 0], points_array[:, 1], "o", markersize = 15)
+
+    print(delaunay_triangulation)
+
+    # point labelling
+    for integer_label, point in enumerate(points):
+        plt.text(point[0], point[1], integer_label, ha = "center", va = "center", fontsize = 10, color='white') 
+
+    # face labelling
+    for integer_label, face_index in enumerate(delaunay_triangulation):
+        point = points_array[face_index].mean(axis = 0)
+        plt.text(point[0], point[1], integer_label, ha = "center", va = "center", fontsize = 10)
 
     plt.show()

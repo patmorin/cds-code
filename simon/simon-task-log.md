@@ -15,8 +15,10 @@
 - Wrote a `README.md` with a description of the project, and an installation and usage guide
 - Complete edge to face map, ensuring the outer face edges are ordered in a counter-clockwise manner
 - Refactored remaining code for graph generation and plotting
-- create an adjacency list
+- Created an adjacency list
+- Refactored code into more independent functions
+- Simplified graph plotting
 
 ## TO DO
 
-- label in black the vertex # with networkx
+- label the vertices black
