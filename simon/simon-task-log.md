@@ -18,7 +18,6 @@
 - Created an adjacency list
 - Refactored code into more independent functions
 - Simplified graph plotting
+- label the vertices and the faces
 
 ## TO DO
-
-- label the vertices black

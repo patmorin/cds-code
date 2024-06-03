@@ -186,11 +186,8 @@ def draw_graph(points, delaunay_triangulation):
 
     print(delaunay_triangulation)
 
-    # point labelling
     for integer_label, point in enumerate(points):
         plt.text(point[0], point[1], integer_label, ha = "center", va = "center", fontsize = 10, color='white') 
-
-    # face labelling
     for integer_label, face_index in enumerate(delaunay_triangulation):
         point = points_array[face_index].mean(axis = 0)
         plt.text(point[0], point[1], integer_label, ha = "center", va = "center", fontsize = 10)
