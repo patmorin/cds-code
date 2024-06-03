@@ -1,4 +1,4 @@
-# CDS in a Triangulated Graph
+# Connected Dominating Sets in a Triangulated Graph
 
 An implementation of a greedy algorithm describe in this [research paper](https://arxiv.org/abs/2312.03399) to determine connected dominating sets in a triangulated graph.
 

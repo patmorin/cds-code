@@ -1,9 +1,10 @@
 import argparse
+import collections
 import random
 import sys
-from typing import Any, Dict, List, Set, Tuple
 
 import matplotlib.pyplot as plt
+import numpy as np
 import scipy
 import scipy.spatial  # linux
 
@@ -12,11 +13,10 @@ import message
 COLLINEAR: str = "collinear"
 RANDOM_DISK: str = "random points in disk"
 RAND_TRI: str = "random points in triangle"
-RED = "\033[0;31m"
 EDGE_COUNT = 3
 
 
-def parse_args() -> argparse.Namespace:
+def parse_args():
     parser = argparse.ArgumentParser(description=message.DESCRIPTION)
 
     parser.add_argument(
@@ -46,7 +46,7 @@ def parse_args() -> argparse.Namespace:
     return args
 
 
-def positive_int(value: Any) -> int:
+def positive_int(value):
     int_value = int(value)
 
     if int_value <= 0:
@@ -57,33 +57,21 @@ def positive_int(value: Any) -> int:
     return int_value
 
 
-def collect_args(args: argparse.Namespace) -> Tuple[int, str]:
-    point_count: int = args.N
+def collect_args(args):
+    point_count = args.N
 
     if args.collinear:
-        data_type: str = COLLINEAR
+        data_type = COLLINEAR
     elif args.rantri:
-        data_type: str = RAND_TRI
+        data_type = RAND_TRI
     else:
-        data_type: str = RANDOM_DISK
+        data_type = RANDOM_DISK
 
     return point_count, data_type
 
 
-def create_graph(
-    point_count: int, data_type: str
-) -> Tuple[List[Tuple[float, float]], List[List[int]]]:
-    print(f"Step 1: Generating {data_type} point set of size {point_count}...")
-    points: List[Tuple[float, float]] = generate_points(point_count, data_type)
-
-    print(message.STEP_2)
-    faces: List = delaunay_triangulation(points)
-
-    return points, faces
-
-
-def generate_points(point_count: int, data_type: str) -> List[Tuple[float, float]]:
-    points = generate_initial_points(data_type)
+def generate_points(point_count, data_type):
+    points = gen_initial_points(data_type)
     additional_count = point_count - len(points)
 
     if data_type == RANDOM_DISK:
@@ -104,14 +92,14 @@ def generate_points(point_count: int, data_type: str) -> List[Tuple[float, float
     return points
 
 
-def generate_initial_points(data_type: str) -> List[Tuple[float, float]]:
+def gen_initial_points(data_type):
     if data_type == RANDOM_DISK or data_type == COLLINEAR:
         return [(-1.5, -1.5), (-1.5, 3), (3, -1.5)]
     elif data_type == RAND_TRI:
         return [(0, 0), (1, 1), (1, 0)]
 
 
-def gen_unit_circ_point() -> Tuple[float, float]:
+def gen_unit_circ_point():
     while True:
         x = 2 * random.random() - 1
         y = 2 * random.random() - 1
@@ -119,25 +107,28 @@ def gen_unit_circ_point() -> Tuple[float, float]:
             return (x, y)
 
 
-def delaunay_triangulation(points: List[Tuple[float, float]]) -> List[List[int]]:
-    delaunay_triangulation: Any = scipy.spatial.Delaunay(points)
-    faces: List[List[int]] = list()
+def compute_delaunay_triangulation(points):
+    points_array = np.array(points)
+    delaunay_triangulation = scipy.spatial.Delaunay(points_array)
+    return delaunay_triangulation.simplices
 
-    for face in delaunay_triangulation.simplices:
+
+def collect_faces(delaunay_triangulation):
+    faces = list()
+
+    for face in delaunay_triangulation:
         faces.append(list(face))
 
     return faces
 
 
-def classify_edge(faces: List[List[int]]) -> Dict[Tuple[int, int], int]:
-    print(message.STEP_3)
-
-    edge_face_map: Dict[Tuple[int, int], int] = dict()
-    outer_face_edges: Set[Tuple[int, int]] = set()
+def classify_edge(faces):
+    edge_face_map = dict()
+    outer_face_edges = set()
 
     for face_id, face in enumerate(faces):
         for i in range(EDGE_COUNT):
-            cc_edge: Tuple[int, int] = (
+            cc_edge = (
                 face[i],
                 face[(i + 1) % EDGE_COUNT],
             )  # a edge in the counter-clockwise direction
@@ -152,10 +143,8 @@ def classify_edge(faces: List[List[int]]) -> Dict[Tuple[int, int], int]:
     return edge_face_map
 
 
-def track_outer_face(
-    cc_edge: Tuple[int, int], outer_face_edges: Set[Tuple[int, int]]
-) -> None:
-    reversed_cc_edge: Tuple[int, int] = cc_edge[::-1]
+def track_outer_face(cc_edge, outer_face_edges):
+    reversed_cc_edge = cc_edge[::-1]
     if reversed_cc_edge in outer_face_edges:
         outer_face_edges.remove(reversed_cc_edge)
     else:
@@ -163,51 +152,34 @@ def track_outer_face(
 
 
 def add_outer_face(
-    outer_face_id: int,
-    outer_face_edges: Set[Tuple[int, int]],
-    edge_face_map: Dict[Tuple[int, int], int],
-) -> None:
+    outer_face_id,
+    outer_face_edges,
+    edge_face_map,
+):
     for c_edge in outer_face_edges:
-        cc_edge: Tuple[int, int] = c_edge[
-            ::-1
-        ]  # make the actual edge of each face counter-clockwise
+        cc_edge = c_edge[::-1]  # make the actual edge of each face counter-clockwise
         edge_face_map[cc_edge] = outer_face_id
 
 
-def createAdjacencyList() -> Dict[int, int]:
-    pass    
+def create_adjacency_list(faces):
+    adjacency_list = collections.defaultdict(set)
 
-def draw_graph(points: List[Tuple[float, float]], faces: List[List[int]]) -> None:
-    print(message.STEP_5)
-    sys.stdout.write(RED)
-    print(message.STEP_5_WARNING)
+    for face in faces:
+        for vertex in face:
+            complement = list(set(face) - {vertex})
+            adjacency_list[vertex].add(complement[0])
+            adjacency_list[vertex].add(complement[1])
 
-    plot_black_edges(points, faces)
+    return adjacency_list
 
-    plot_points(points)
+
+def draw_graph(points, delaunay_triangulation):
+    points_array = np.array(points)
+
+    plt.triplot(
+        points_array[:, 0], points_array[:, 1], delaunay_triangulation, color="black"
+    )
+
+    plt.plot(points_array[:, 0], points_array[:, 1], "o", markersize=10)
 
     plt.show()
-
-
-def plot_black_edges(points, faces) -> None:
-    for face in faces:
-        for i in range(EDGE_COUNT):
-            start_point = points[face[i]]
-            end_point = points[face[(i + 1) % EDGE_COUNT]]
-            plt.plot(
-                [start_point[0], end_point[0]],
-                [start_point[1], end_point[1]],
-                color="black",
-            )
-
-
-def plot_points(points) -> None:
-    for point in points:
-        plt.plot(
-            point[0],
-            point[1],
-            color="red",
-            lw=1,
-            marker="o",
-            markersize=min(8, 180 / len(points)),
-        )

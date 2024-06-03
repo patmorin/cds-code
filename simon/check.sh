@@ -2,7 +2,7 @@
 
 echo "Running dev tools..."
 
-code=src/*
+code=src/*.py
 
 echo "Running Black:"
 black $code

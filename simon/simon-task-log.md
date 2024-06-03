@@ -1,5 +1,7 @@
 # Work log (Simon Tran)
 
+## Completed Tasks
+
 - Installed Qhull and setup personal local repository
 - Helped Eden setup and install Qhull, Git and a simple text editor (previously she was usually Windows Notepad).
 - Refactored code
@@ -13,9 +15,8 @@
 - Wrote a `README.md` with a description of the project, and an installation and usage guide
 - Complete edge to face map, ensuring the outer face edges are ordered in a counter-clockwise manner
 - Refactored remaining code for graph generation and plotting
+- create an adjacency list
 
-## TO DO 
+## TO DO
 
-- ![](may-8-chalkboard.jpeg)
-- ![](may-8-paper.jpeg)
-
+- label in black the vertex # with networkx
