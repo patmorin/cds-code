@@ -75,19 +75,11 @@ def generate_points(point_count, data_type):
     additional_count = point_count - len(points)
 
     if data_type == RANDOM_DISK:
-        points += [gen_unit_circ_point() for _ in range(additional_count)]
+        points += gen_random_disk_points(additional_count)
     elif data_type == COLLINEAR:
-        points += [
-            (-1 + i / additional_count, -1 + i / additional_count)
-            for i in range(additional_count)
-        ]
+        points += gen_random_disk_points(additional_count)
     elif data_type == RAND_TRI:
-        additional_points = [
-            (random.random(), random.random()) for _ in range(additional_count)
-        ]
-        points += [
-            (max(x, y), min(x, y)) for x, y in additional_points
-        ]  # ensure x < y for each point, swapping if necessary
+        points += gen_random_triangle_points(additional_count)
 
     return points
 
@@ -99,12 +91,27 @@ def gen_initial_points(data_type):
         return [(0, 0), (1, 1), (1, 0)]
 
 
+def gen_random_disk_points(count):
+    return [gen_unit_circ_point() for _ in range(count)]
+
+
 def gen_unit_circ_point():
     while True:
         x = 2 * random.random() - 1
         y = 2 * random.random() - 1
         if x**2 + y**2 < 1:
             return (x, y)
+
+
+def gen_collinear_points(count):
+    return [(-1 + i / count, -1 + i / count) for i in range(count)]
+
+
+def gen_random_triangle_points(count):
+    additional_points = [(random.random(), random.random()) for _ in range(count)]
+    return [
+        (max(x, y), min(x, y)) for x, y in additional_points
+    ]  # ensure x < y for each point, swapping if necessary
 
 
 def compute_delaunay_triangulation(points):
@@ -182,14 +189,24 @@ def draw_graph(points, delaunay_triangulation):
         points_array[:, 0], points_array[:, 1], delaunay_triangulation, color="black"
     )
 
-    plt.plot(points_array[:, 0], points_array[:, 1], "o", markersize = 15)
+    plt.plot(points_array[:, 0], points_array[:, 1], "o", markersize=15)
 
     print(delaunay_triangulation)
 
     for integer_label, point in enumerate(points):
-        plt.text(point[0], point[1], integer_label, ha = "center", va = "center", fontsize = 10, color='white') 
+        plt.text(
+            point[0],
+            point[1],
+            integer_label,
+            ha="center",
+            va="center",
+            fontsize=10,
+            color="white",
+        )
     for integer_label, face_index in enumerate(delaunay_triangulation):
-        point = points_array[face_index].mean(axis = 0)
-        plt.text(point[0], point[1], integer_label, ha = "center", va = "center", fontsize = 10)
+        point = points_array[face_index].mean(axis=0)
+        plt.text(
+            point[0], point[1], integer_label, ha="center", va="center", fontsize=10
+        )
 
     plt.show()

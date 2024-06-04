@@ -18,7 +18,7 @@ def main():
     print(message.STEP_3)
     faces = utils.collect_faces(delaunay_triangulation)
     edge_face_map = utils.classify_edge(faces)
-    
+
     print(message.STEP_4)
     adjacency_list = utils.create_adjacency_list(faces)
 
